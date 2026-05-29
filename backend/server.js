@@ -11,12 +11,17 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'http://localhost:3000',
-  process.env.FRONTEND_URL,
+  'https://dainty-fenglisu-ce6d45.netlify.app',
+  ...(process.env.FRONTEND_URL || '').split(','),
+  ...(process.env.FRONTEND_URLS || '').split(','),
 ].filter(Boolean);
 
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    const normalizedOrigin = origin?.replace(/\/$/, '');
+    const normalizedAllowedOrigins = allowedOrigins.map((allowedOrigin) => allowedOrigin.trim().replace(/\/$/, ''));
+
+    if (!origin || normalizedAllowedOrigins.includes(normalizedOrigin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
