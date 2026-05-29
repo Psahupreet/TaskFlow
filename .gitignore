@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+
+# Build output
+build/
+dist/
+frontend/build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime and cache files
+.cache/
+backend/.cache/
+frontend/.cache/
+backend/node_modules/.cache/
+frontend/node_modules/.cache/
+.eslintcache
+
+# Test coverage
+coverage/
+frontend/coverage/
+backend/coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Package manager extras
+.npm/
+.yarn/
+.pnpm-store/
+
+# Misc local files
+*.local
