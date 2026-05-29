@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.REACT_APP_API_URL || 'https://taskflow-u9wo.onrender.com/api',
 });
 
 // Attach token to every request
