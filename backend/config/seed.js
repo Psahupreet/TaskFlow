@@ -36,7 +36,7 @@ const members = [
   },
   {
     name: 'Ankit',
-    email: 'ankitexcisejci@gmail.com',
+    email: 'ankitmpexcisejci1626@gmail.com',
     password: 'Ankit@8529',
     role: 'member',
     department: 'Engineering',
@@ -48,11 +48,13 @@ const members = [
     role: 'member',
     department: 'Engineering',
   },
-  { name: 'Kirti', 
-    email: 'kirtimpexciseiccc@gmail.com', 
-    password: 'Kirti@2004', 
-    role: 'member', 
-    department: 'Engineering' },
+  {
+    name: 'Kirti',
+    email: 'kirtimpexciseiccc@gmail.com',
+    password: 'Kirti@2004',
+    role: 'member',
+    department: 'Engineering',
+  },
 ];
 
 const seed = async () => {
@@ -83,7 +85,7 @@ const seed = async () => {
           .join(''),
       }))
     );
-    console.log('15 team members created');
+    console.log(`${members.length} team members created`);
 
     console.log('\n--- LOGIN CREDENTIALS ---');
     console.log('Admin:  AdminTask@gmail.com / MpExcise@010');
