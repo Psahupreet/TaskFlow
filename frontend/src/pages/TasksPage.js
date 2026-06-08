@@ -14,7 +14,7 @@ function TaskModal({ task, members, onClose, onSave }) {
   const [form, setForm] = useState({
     title: task?.title || '',
     description: task?.description || '',
-    assignedTo: task?.assignedTo?._id || task?.assignedTo || '',
+    assignedTo: isEdit ? task?.assignedTo?._id || task?.assignedTo || '' : [],
     priority: task?.priority || 'medium',
     category: task?.category || 'other',
     dueDate: task?.dueDate ? format(new Date(task.dueDate), 'yyyy-MM-dd') : today,
@@ -25,16 +25,41 @@ function TaskModal({ task, members, onClose, onSave }) {
   const [error, setError] = useState('');
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const selectedAssigneeIds = Array.isArray(form.assignedTo)
+    ? form.assignedTo
+    : form.assignedTo
+      ? [form.assignedTo]
+      : [];
+  const allMembersSelected = members.length > 0 && selectedAssigneeIds.length === members.length;
+  const toggleAssignee = (id) => {
+    setForm((f) => {
+      const selected = Array.isArray(f.assignedTo) ? f.assignedTo : [];
+      return {
+        ...f,
+        assignedTo: selected.includes(id) ? selected.filter((memberId) => memberId !== id) : [...selected, id],
+      };
+    });
+  };
+  const toggleAllAssignees = () => {
+    setForm((f) => ({
+      ...f,
+      assignedTo: allMembersSelected ? [] : members.map((member) => member._id),
+    }));
+  };
 
   const handleSubmit = async () => {
-    if (!form.title.trim() || !form.assignedTo || !form.dueDate) {
+    if (!form.title.trim() || selectedAssigneeIds.length === 0 || !form.dueDate) {
       setError('Title, assignee, and due date are required');
       return;
     }
     setLoading(true);
     setError('');
     try {
-      const payload = { ...form, tags: form.tags ? form.tags.split(',').map((t) => t.trim()) : [] };
+      const payload = {
+        ...form,
+        assignedTo: isEdit ? form.assignedTo : selectedAssigneeIds,
+        tags: form.tags ? form.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+      };
       if (isEdit) {
         await api.put(`/tasks/${task._id}`, payload);
       } else {
@@ -68,12 +93,39 @@ function TaskModal({ task, members, onClose, onSave }) {
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">Assign To *</label>
-              <select className="form-select" value={form.assignedTo} onChange={set('assignedTo')}>
+              {isEdit ? (
+                <select className="form-select" value={form.assignedTo} onChange={set('assignedTo')}>
                 <option value="">Select member</option>
                 {members.map((m) => (
                   <option key={m._id} value={m._id}>{m.name} — {m.department}</option>
                 ))}
-              </select>
+                </select>
+              ) : (
+                <div className="assignee-picker">
+                  <div className="assignee-picker-head">
+                    <span>{selectedAssigneeIds.length} selected</span>
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={toggleAllAssignees}>
+                      {allMembersSelected ? 'Clear all' : 'Select all'}
+                    </button>
+                  </div>
+                  <div className="assignee-list">
+                    {members.map((m) => (
+                      <label key={m._id} className="assignee-option">
+                        <input
+                          type="checkbox"
+                          checked={selectedAssigneeIds.includes(m._id)}
+                          onChange={() => toggleAssignee(m._id)}
+                        />
+                        <span className="avatar sm">{m.avatar}</span>
+                        <span className="assignee-copy">
+                          <span>{m.name}</span>
+                          <small>{m.department}</small>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div className="form-group">
               <label className="form-label">Due Date *</label>

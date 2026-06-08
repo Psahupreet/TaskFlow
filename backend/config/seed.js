@@ -48,7 +48,11 @@ const members = [
     role: 'member',
     department: 'Engineering',
   },
-  { name: 'Kirti', email: 'kirtimpexciseiccc@gmail.com', password: 'Kirti@2004', role: 'member', department: 'Engineering' },
+  { name: 'Kirti', 
+    email: 'kirtimpexciseiccc@gmail.com', 
+    password: 'Kirti@2004', 
+    role: 'member', 
+    department: 'Engineering' },
 ];
 
 const seed = async () => {

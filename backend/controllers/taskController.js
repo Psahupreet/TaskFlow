@@ -85,26 +85,43 @@ const createTask = async (req, res) => {
   try {
     const { title, description, assignedTo, priority, category, dueDate, tags } = req.body;
 
-    const assignee = await User.findById(assignedTo);
-    if (!assignee) return res.status(404).json({ success: false, message: 'Assigned user not found' });
+    const assigneeIds = Array.isArray(assignedTo) ? assignedTo.filter(Boolean) : [assignedTo].filter(Boolean);
+    const uniqueAssigneeIds = [...new Set(assigneeIds.map((id) => id.toString()))];
 
-    const task = await Task.create({
+    if (uniqueAssigneeIds.length === 0) {
+      return res.status(400).json({ success: false, message: 'At least one assignee is required' });
+    }
+
+    const assignees = await User.find({ _id: { $in: uniqueAssigneeIds }, role: 'member' });
+    if (assignees.length !== uniqueAssigneeIds.length) {
+      return res.status(404).json({ success: false, message: 'One or more assigned users were not found' });
+    }
+
+    const taskPayloads = uniqueAssigneeIds.map((assigneeId) => ({
       title,
       description,
-      assignedTo,
+      assignedTo: assigneeId,
       assignedBy: req.user._id,
       priority,
       category,
       dueDate,
       tags: tags || [],
+    }));
+
+    const tasks = await Task.insertMany(taskPayloads);
+    const populatedTasks = await Task.find({ _id: { $in: tasks.map((task) => task._id) } })
+      .populate([
+        { path: 'assignedTo', select: 'name avatar department' },
+        { path: 'assignedBy', select: 'name avatar' },
+      ])
+      .sort({ createdAt: -1 });
+
+    res.status(201).json({
+      success: true,
+      task: populatedTasks[0],
+      tasks: populatedTasks,
+      count: populatedTasks.length,
     });
-
-    const populated = await task.populate([
-      { path: 'assignedTo', select: 'name avatar department' },
-      { path: 'assignedBy', select: 'name avatar' },
-    ]);
-
-    res.status(201).json({ success: true, task: populated });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
