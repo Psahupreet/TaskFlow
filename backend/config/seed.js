@@ -48,15 +48,7 @@ const members = [
     role: 'member',
     department: 'Engineering',
   },
-  { name: 'Grace Kim', email: 'grace@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Henry Davis', email: 'henry@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Iris Wilson', email: 'iris@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Jack Taylor', email: 'jack@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Karen Moore', email: 'karen@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Leo Anderson', email: 'leo@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Mia Thomas', email: 'mia@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Noah Jackson', email: 'noah@team.com', password: 'password123', role: 'member', department: 'Engineering' },
-  { name: 'Olivia Harris', email: 'olivia@team.com', password: 'password123', role: 'member', department: 'Engineering' },
+  { name: 'Kirti', email: 'kirtimpexciseiccc@gmail.com', password: 'Kirti@2004', role: 'member', department: 'Engineering' },
 ];
 
 const seed = async () => {
